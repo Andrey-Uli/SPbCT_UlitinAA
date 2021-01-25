@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Шифр Цезаря</title>
+    <style>
+body {
+  padding-top: 3%;
+  padding-left: 10%;
+  padding-right: 30%;
+  background: linear-gradient(25deg, #FFFFA0, #32CD32);
+  background-size: 1500px 800px;
+}
+button{
+  background-color: #00FA9A;
+  border-color: #00FA9A;
+  font-weight: bold;
+  font-style: italic;
+}
+#output {
+  outline: none;
+}
+
+    </style>
+</head>
+<body>
+  <h4><i>*Шифрование методом Цезаря для русского языка. Используйте заглавные и прописные буквы
+  алфавита, а также цифры для шифровки и расшифровки. Ключ - значение сдвига.</i></h4>
+    <div class="container">
+        <div class="row justify-content-around">
+          <div class="col-md-6">
+            <div id="encrypt-block">
+              <h3>Исходный текст: </h3>
+              <textarea name="user-text" id="text-to-work" cols="40" rows="3"></textarea>
+              <br><br>
+              <div class="form-group">
+                <button class="btn btn-primary" id="encrypt-btn">Зашифровать</button><br>
+                <br><button class="btn btn-primary" id="decrypt-btn">Расшифровать</button>
+              </div>
+              <h4>Ключ:</h4>
+              <select name="user_step" id="encrypt-step" size="3">
+                <option selected>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+                <option>7</option>
+                <option>8</option>
+                <option>9</option>
+                <option>10</option>
+                <option>11</option>
+                <option>12</option>
+                <option>13</option>
+                <option>14</option>
+                <option>15</option>
+                <option>16</option>
+                <option>17</option>
+                <option>18</option>
+                <option>19</option>
+                <option>20</option>
+                <option>21</option>
+                <option>22</option>
+                <option>23</option>
+                <option>24</option>
+                <option>25</option>
+                <option>26</option>
+                <option>27</option>
+                <option>28</option>
+                <option>29</option>
+                <option>30</option>
+                <option>31</option>
+                <option>32</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-6">
+              <h3>Новый текст:</h3>
+              <textarea readonly id="output" cols="40" rows="3"></textarea>
+          </div>
+          <div class="form-group">
+          <button class="btn btn-danger" id="btn-reset">Удалить запись</button>
+          </div>
+        </div>
+      </div>
+    <script>
+ window.addEventListener('DOMContentLoaded', function() {
+  
+  let UserText = document.getElementById('text-to-work');
+  let UserSelectStap = document.getElementById('encrypt-step');
+  let UserStep = Number(UserSelectStap.value);
+  let result = document.getElementById('output');
+  let Encrypt = document.getElementById('encrypt-btn');
+  let Decrypt = document.getElementById('decrypt-btn');
+  let Reset = document.getElementById('btn-reset');
+  let TextToWork;
+  let pos;
+  
+  let Simvol = [' ',',','.',':',';','!','?','-','_','=','+','(',')','"'];
+  let Cifry = ['0','1','2','3','4','5','6','7','8','9'];
+  let Zaglav = ['А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ъ', 'Ы', 'Ь', 'Э', 'Ю', 'Я'];
+  let Propis = ['а', 'б', 'в', 'г', 'д', 'е', 'ё', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я'];
+ 
+  let ZaglavEncrypt = Array(33);
+  let PropisEncrypt = Array(33);
+  let CifryEncrypt = Array(10);
+  
+  initEncrypt();
+  
+  UserSelectStap.addEventListener('change', function() {
+    UserStep = Number(this.value);
+    initEncrypt();
+  });
+  
+  function initEncrypt() {
+    ZaglavEncrypt = CezarEncrypt(UserStep, Zaglav);
+    PropisEncrypt = CezarEncrypt(UserStep, Propis);
+    CifryEncrypt = CezarEncrypt(UserStep, Cifry);
+  }
+
+  
+  function CezarEncrypt(stap, arr) {
+    let CopyAlf = arr.slice();
+    let i = 0;
+    
+    while ((i + stap) < (CopyAlf.length)) {
+      let buff = CopyAlf[i];
+      CopyAlf[i] = CopyAlf[i + stap];
+      CopyAlf[i + stap] = buff;
+      i++;     
+    }
+    return CopyAlf;
+  }
+  
+  
+  function contains(symb, arr) {
+    let letter = symb;
+    pos = 0;
+    for (let i = 0; i < arr.length; i++) {
+      if (letter === arr[i]) {
+        pos = i;
+        return true;
+        break;
+      }
+    }
+  }
+  
+  function encrypt(text) {
+    let result = '';
+    for (let i = 0; i <= text.length; i++) {
+      let symbol = text[i];
+      if (contains(symbol, Simvol)) {
+        result += symbol;
+      }
+      if (contains(symbol, Cifry)) {
+        symbol = CifryEncrypt[pos];
+        result += symbol;
+      }
+      if (contains(symbol, Zaglav)) {
+          symbol = ZaglavEncrypt[pos];
+          result += symbol;
+      }
+      if ((contains(symbol, Propis))) {
+          symbol = PropisEncrypt[pos];
+          result += symbol;
+      }
+    }
+    return result;
+  }
+  
+  function decrypt(text) {
+    let result = '';
+    for (let i = 0; i <= text.length; i++) {
+      let symbol = text[i];
+      if (contains(symbol, Simvol)) {
+        result += symbol;
+      }
+      if (contains(symbol, CifryEncrypt)) {
+        symbol = Cifry[pos];
+        result += symbol;
+      }
+      if (contains(symbol, ZaglavEncrypt)) {
+          symbol = Zaglav[pos];
+          result += symbol;
+      }
+      if ((contains(symbol, PropisEncrypt))) {
+          symbol = Propis[pos];
+          result += symbol;
+      }  
+    }
+    return result;
+  }
+
+  Encrypt.addEventListener('click', function() {
+    TextToWork = UserText.value;
+    result.value = encrypt(TextToWork);
+  });
+  Decrypt.addEventListener('click', function() {
+    TextToWork = UserText.value;
+    result.value = decrypt(TextToWork);
+  });
+  Reset.addEventListener('click', function() {
+    UserText.value = '';
+    result.value = '';
+  });
+  
+});
+    </script>
+</body>
+</html>
